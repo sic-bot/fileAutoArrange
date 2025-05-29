@@ -200,10 +200,7 @@ export class MarkdownReporter {
       if (files.length > 0) {
         const totalSize = files.reduce((sum, file) => sum + file.size, 0);
         markdown += `### ${category} (${files.length}个文件, ${this.formatFileSize(totalSize)})\n\n`;
-        markdown += this.generateFileTable(files.slice(0, 10)); // 只显示前10个
-        if (files.length > 10) {
-          markdown += `*...还有${files.length - 10}个文件*\n\n`;
-        }
+        markdown += this.generateFileTable(files); // 显示所有文件
       }
     }
 
@@ -211,7 +208,7 @@ export class MarkdownReporter {
     markdown += `## 📍 路径分布\n\n`;
     const sortedPaths = Object.entries(analysis.pathDistribution)
       .sort(([,a], [,b]) => b.length - a.length)
-      .slice(0, 10);
+      .slice(0, 20); // 路径分布仍然限制前20个，避免过长
 
     markdown += `| 路径 | 文件数量 | 总大小 |\n`;
     markdown += `|------|----------|--------|\n`;
@@ -234,10 +231,7 @@ export class MarkdownReporter {
     }
     if (analysis.olderFiles.length > 0) {
       markdown += `### 📅 更早 (${analysis.olderFiles.length}个文件)\n`;
-      markdown += this.generateTimelineFiles(analysis.olderFiles.slice(0, 15));
-      if (analysis.olderFiles.length > 15) {
-        markdown += `*...还有${analysis.olderFiles.length - 15}个文件*\n\n`;
-      }
+      markdown += this.generateTimelineFiles(analysis.olderFiles); // 显示所有文件
     }
 
     markdown += `---\n\n`;
@@ -257,17 +251,13 @@ export class MarkdownReporter {
     let table = `| 文件名 | 大小 | 修改时间 | 路径 |\n`;
     table += `|--------|------|----------|------|\n`;
 
-    for (const file of files.slice(0, 20)) { // 限制显示数量
+    for (const file of files) { // 显示所有文件，移除数量限制
       const fileName = file.name;
       const size = this.formatFileSize(file.size);
       const modTime = new Date(file.modifiedTime).toLocaleString('zh-CN');
       const filePath = file.path.length > 60 ? '...' + file.path.slice(-57) : file.path;
       
       table += `| ${fileName} | ${size} | ${modTime} | \`${filePath}\` |\n`;
-    }
-
-    if (files.length > 20) {
-      table += `\n*...还有${files.length - 20}个文件*\n`;
     }
 
     table += `\n`;
@@ -282,7 +272,7 @@ export class MarkdownReporter {
   generateTimelineFiles(files) {
     let timeline = '';
     
-    for (const file of files.slice(0, 10)) {
+    for (const file of files) { // 显示所有文件，移除数量限制
       const time = new Date(file.modifiedTime).toLocaleTimeString('zh-CN');
       const size = this.formatFileSize(file.size);
       timeline += `- **${time}** - ${file.name} (${size}) - \`${file.path}\`\n`;
