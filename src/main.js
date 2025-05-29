@@ -16,6 +16,7 @@ import { fileURLToPath } from 'url';
 import { FileScanner } from './fileScanner.js';
 import { FileClassifier } from './classifier.js';
 import { ExcelReporter } from './excelReporter.js';
+import { MarkdownReporter } from './markdownReporter.js';
 import { MCPClient } from './mcpClient.js';
 import { Logger } from './logger.js';
 
@@ -34,6 +35,7 @@ class FileAutoArrange {
     this.scanner = null;
     this.classifier = null;
     this.reporter = null;
+    this.markdownReporter = null;
     this.mcpClient = null;
     this.spinner = null;
   }
@@ -63,7 +65,11 @@ class FileAutoArrange {
       
       this.spinner = ora('初始化报告生成器...').start();
       this.reporter = new ExcelReporter();
-      this.spinner.succeed('报告生成器初始化完成');
+      this.spinner.succeed('Excel报告生成器初始化完成');
+      
+      this.spinner = ora('初始化Markdown报告生成器...').start();
+      this.markdownReporter = new MarkdownReporter();
+      this.spinner.succeed('Markdown报告生成器初始化完成');
 
       console.log(chalk.green('✅ 组件初始化完成'));
     } catch (error) {
@@ -101,17 +107,29 @@ class FileAutoArrange {
         timeRange: `近${options.days || 7}天`,
         ...options
       });
-      this.spinner.succeed('报告生成完成');
+      this.spinner.succeed('Excel报告生成完成');
+
+      // 步骤4: 生成Markdown变化记录
+      this.spinner = ora('生成文件变化记录...').start();
+      const markdownPath = await this.markdownReporter.generateChangeReport(files, {
+        title: `文件变化记录 - ${new Date().toLocaleDateString('zh-CN')}`,
+        timeRange: `近${options.days || 7}天`,
+        days: options.days || 7,
+        outputDir: options.output || './output/reports'
+      });
+      this.spinner.succeed('文件变化记录生成完成');
 
       console.log(chalk.green.bold('\n🎉 文件整理任务完成！'));
-      console.log(chalk.cyan(`📊 报告保存位置: ${reportPath}`));
+      console.log(chalk.cyan(`📊 Excel报告: ${reportPath}`));
+      console.log(chalk.cyan(`📝 变化记录: ${markdownPath}`));
       
       // 打印统计信息
       await this.printSummary(classifiedFiles);
 
       await logger.logInfo('文件自动整理任务完成', { 
         filesCount: files.length, 
-        reportPath 
+        reportPath,
+        markdownPath
       });
 
     } catch (error) {

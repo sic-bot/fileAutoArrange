@@ -42,4 +42,23 @@
 建议配置:
 - allowedDirectories应该包含所有可能需要扫描的根目录
 - 可以关闭enablePathValidation来跳过路径验证（但不推荐）
-- 新增扫描路径时，同时更新两个配置文件 
+- 新增扫描路径时，同时更新两个配置文件
+
+=== Git推送记录 ===
+
+提交信息: "修复路径扫描问题：同步配置文件并优化异步加载"
+提交哈希: 31ddafc
+推送时间: 2025-05-29
+推送状态: 成功推送到 origin/main
+
+修改文件:
+- config/classification.json: 添加E:\Downloads到scanPaths
+- config/mcp-config.json: 添加E:\wc, F:\workspace, E:\Downloads到allowedDirectories  
+- src/fileScanner.js: 修复异步配置加载，添加ensureConfigLoaded方法
+- src/main.js: 优化初始化流程，添加详细的组件初始化步骤
+- user.log: 新增，记录问题分析和解决方案
+- 使用说明.md: 更新相关配置说明
+
+推送结果: 
+- 6个文件被修改，92行新增，4行删除
+- 成功推送到远程仓库 https://github.com/sic-bot/fileAutoArrange.git 
