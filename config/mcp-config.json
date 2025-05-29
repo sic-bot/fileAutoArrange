@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "description": "文件系统操作服务器",
+      "capabilities": ["read_file", "write_file", "list_directory", "search_files"]
+    },
+    "python-filesystem": {
+      "command": "uvx",
+      "args": ["mcp-server-filesystem"],
+      "description": "Python文件系统操作服务器",
+      "capabilities": ["advanced_search", "file_operations", "directory_tree"]
+    }
+  },
+  "defaultServer": "filesystem",
+  "timeout": 30000,
+  "retryAttempts": 3,
+  "allowedDirectories": [
+    "C:\\Users\\%USERNAME%\\Desktop",
+    "C:\\Users\\%USERNAME%\\Downloads", 
+    "C:\\Users\\%USERNAME%\\Documents",
+    "C:\\Users\\%USERNAME%\\Pictures",
+    "C:\\Users\\%USERNAME%\\Videos",
+    "C:\\Users\\%USERNAME%\\Music"
+  ],
+  "security": {
+    "enablePathValidation": true,
+    "restrictToAllowedDirs": true,
+    "maxFileSize": "100MB",
+    "allowedOperations": ["read", "list", "search"]
+  }
+} 

@@ -1,0 +1,82 @@
+{
+  "fileCategories": {
+    "文档类": {
+      "extensions": [".pdf", ".doc", ".docx", ".txt", ".rtf", ".md", ".odt", ".pages"],
+      "color": "#4472C4",
+      "description": "各种文档和文本文件"
+    },
+    "图片类": {
+      "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".tiff", ".ico", ".webp"],
+      "color": "#70AD47",
+      "description": "图像和图形文件"
+    },
+    "视频类": {
+      "extensions": [".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v"],
+      "color": "#FFC000",
+      "description": "视频和动画文件"
+    },
+    "音频类": {
+      "extensions": [".mp3", ".wav", ".flac", ".aac", ".wma", ".ogg", ".m4a"],
+      "color": "#C55A5A",
+      "description": "音频和音乐文件"
+    },
+    "程序类": {
+      "extensions": [".exe", ".msi", ".dmg", ".deb", ".rpm", ".app", ".apk"],
+      "color": "#8F5A9C",
+      "description": "可执行程序和安装包"
+    },
+    "压缩包": {
+      "extensions": [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz"],
+      "color": "#D6B656",
+      "description": "压缩文件和归档"
+    },
+    "代码类": {
+      "extensions": [".js", ".py", ".java", ".cpp", ".c", ".cs", ".php", ".html", ".css", ".json", ".xml"],
+      "color": "#5B9BD5",
+      "description": "源代码和脚本文件"
+    },
+    "数据库": {
+      "extensions": [".db", ".sqlite", ".mdb", ".accdb", ".sql"],
+      "color": "#A5A5A5",
+      "description": "数据库文件"
+    },
+    "电子表格": {
+      "extensions": [".xlsx", ".xls", ".csv", ".ods"],
+      "color": "#264478",
+      "description": "电子表格文件"
+    },
+    "演示文稿": {
+      "extensions": [".pptx", ".ppt", ".odp", ".key"],
+      "color": "#B85450",
+      "description": "演示文稿文件"
+    },
+    "其他类": {
+      "extensions": [],
+      "color": "#B2B2B2",
+      "description": "未分类的其他文件"
+    }
+  },
+  "sizeCategories": {
+    "微小": { "min": 0, "max": 1024, "unit": "B" },
+    "小": { "min": 1024, "max": 1048576, "unit": "KB" },
+    "中": { "min": 1048576, "max": 104857600, "unit": "MB" },
+    "大": { "min": 104857600, "max": 1073741824, "unit": "MB" },
+    "巨大": { "min": 1073741824, "max": -1, "unit": "GB" }
+  },
+  "excludePaths": [
+    "C:\\Windows\\",
+    "C:\\Program Files\\",
+    "C:\\Program Files (x86)\\",
+    "C:\\ProgramData\\",
+    "$Recycle.Bin",
+    "System Volume Information"
+  ],
+  "scanPaths": [
+    "C:\\Users\\%USERNAME%\\Desktop",
+    "C:\\Users\\%USERNAME%\\Downloads",
+    "C:\\Users\\%USERNAME%\\Documents",
+    "C:\\Users\\%USERNAME%\\Pictures",
+    "C:\\Users\\%USERNAME%\\Videos",
+    "C:\\Users\\%USERNAME%\\Music"
+  ]
+} 
