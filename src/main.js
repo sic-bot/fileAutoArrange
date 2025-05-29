@@ -52,9 +52,18 @@ class FileAutoArrange {
       this.spinner.succeed('MCP服务器连接成功');
 
       // 初始化各组件
+      this.spinner = ora('初始化文件扫描器...').start();
       this.scanner = new FileScanner(this.mcpClient);
+      await this.scanner.ensureConfigLoaded();
+      this.spinner.succeed('文件扫描器初始化完成');
+      
+      this.spinner = ora('初始化分类器...').start();
       this.classifier = new FileClassifier();
+      this.spinner.succeed('分类器初始化完成');
+      
+      this.spinner = ora('初始化报告生成器...').start();
       this.reporter = new ExcelReporter();
+      this.spinner.succeed('报告生成器初始化完成');
 
       console.log(chalk.green('✅ 组件初始化完成'));
     } catch (error) {

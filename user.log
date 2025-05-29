@@ -1,0 +1,45 @@
+=== 2025-05-29 问题修复记录 ===
+
+用户问题: 项目中添加的路径没有被扫描
+
+问题分析:
+1. FileScanner构造函数中的配置加载是异步的，但被同步调用，导致config在使用时可能为null
+2. MCP配置文件中的allowedDirectories没有包含classification.json中的E:\wc和F:\workspace路径
+3. 启用了路径验证，导致未在白名单中的路径无法访问
+
+解决方案:
+1. 修改FileScanner.js:
+   - 将loadConfig()改为异步调用并保存为configPromise
+   - 添加ensureConfigLoaded()方法确保配置加载完成
+   - 在scanRecentFiles()方法开始时调用ensureConfigLoaded()
+
+2. 修改main.js:
+   - 在initialize()方法中等待scanner.ensureConfigLoaded()完成
+
+3. 修改config/mcp-config.json:
+   - 在allowedDirectories中添加"E:\\wc"和"F:\\workspace"
+
+修复结果:
+- 修复前: 只能扫描到11个文件（仅限部分默认路径）
+- 修复后: 能够扫描到113个文件（包含所有配置路径）
+- F:\workspace单独测试: 84个文件
+- 所有配置路径都能正常访问和扫描
+
+=== allowedDirectories 与 -p 参数关系说明 ===
+
+配置文件关系:
+1. classification.json中的scanPaths - 默认扫描路径
+2. 命令行-p参数 - 自定义扫描路径（会覆盖默认路径）
+3. mcp-config.json中的allowedDirectories - 安全白名单（限制所有可能路径）
+
+优先级: 命令行-p > classification.json的scanPaths，但都必须在allowedDirectories范围内
+
+安全机制:
+- enablePathValidation: true时，validatePath()会检查所有访问路径
+- 任何不在allowedDirectories中的路径都会被拒绝访问
+- 即使通过-p指定的路径，也必须在安全白名单内
+
+建议配置:
+- allowedDirectories应该包含所有可能需要扫描的根目录
+- 可以关闭enablePathValidation来跳过路径验证（但不推荐）
+- 新增扫描路径时，同时更新两个配置文件 

@@ -22,7 +22,7 @@ export class FileScanner {
     this.mcpClient = mcpClient;
     this.logger = new Logger();
     this.config = null;
-    this.loadConfig();
+    this.configPromise = this.loadConfig();
   }
 
   /**
@@ -33,9 +33,20 @@ export class FileScanner {
       const configPath = path.join(__dirname, '../config/classification.json');
       const configContent = await fs.readFile(configPath, 'utf8');
       this.config = JSON.parse(configContent);
+      await this.logger.logDebug('配置文件加载成功', { configPath });
+      return this.config;
     } catch (error) {
       await this.logger.logError('加载分类配置失败', error);
       throw error;
+    }
+  }
+
+  /**
+   * 确保配置已加载
+   */
+  async ensureConfigLoaded() {
+    if (!this.config) {
+      await this.configPromise;
     }
   }
 
@@ -47,6 +58,9 @@ export class FileScanner {
    */
   async scanRecentFiles(days = 7, customPaths = null) {
     try {
+      // 确保配置已加载
+      await this.ensureConfigLoaded();
+      
       await this.logger.logTaskStart('文件扫描', { days, customPaths });
 
       const cutoffDate = new Date();
@@ -54,6 +68,8 @@ export class FileScanner {
 
       const scanPaths = customPaths || this.getScanPaths();
       const allFiles = [];
+
+      await this.logger.logInfo('开始扫描路径', { scanPaths });
 
       for (const scanPath of scanPaths) {
         try {
@@ -130,7 +146,7 @@ export class FileScanner {
    */
   async scanDirectory(directoryPath, cutoffDate, depth = 0) {
     const files = [];
-    const maxDepth = 3; // 最大递归深度
+    const maxDepth = 10; // 最大递归深度
 
     try {
       // 检查是否应该排除此路径
